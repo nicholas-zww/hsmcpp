@@ -20,16 +20,23 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(HSMBUILD_TARGET "library" CACHE STRING "Desired build output. Possible values: library, platformio, arduinoide")
 
+set(DISABLE_FOR_RELEASE ON)
+if (DISABLE_FOR_RELEASE)
+    set(DEBUG_OPTION OFF)
+else()
+    set(DEBUG_OPTION ON)
+endif()
+
 option(HSMBUILD_VERBOSE "Enable/disable HSM verbosity [feature for DEBUG]" OFF)
 option(HSMBUILD_STRUCTURE_VALIDATION "Enable/disable HSM structure validation" ON)
 option(HSMBUILD_THREAD_SAFETY "Enable/disable HSM thread safety" ON)
-option(HSMBUILD_DEBUGGING "Enable/disable HSM debugging" ON)
+option(HSMBUILD_DEBUGGING "Enable/disable HSM debugging" ${DEBUG_OPTION})
 option(HSMBUILD_DISPATCHER_GLIB "Enable GLib dispatcher" OFF)
 option(HSMBUILD_DISPATCHER_GLIBMM "Enable GLibmm dispatcher" OFF)
 option(HSMBUILD_DISPATCHER_STD "Enable std::thread based dispatcher" ON)
 option(HSMBUILD_DISPATCHER_QT "Enable Qt based dispatcher" OFF)
-option(HSMBUILD_TESTS "Build unittests" ON)
-option(HSMBUILD_EXAMPLES "Build examples" ON)
+option(HSMBUILD_TESTS "Build unittests" ${DEBUG_OPTION})
+option(HSMBUILD_EXAMPLES "Build examples" ${DEBUG_OPTION})
 option(HSMBUILD_CODECOVERAGE "Build with code coverage" OFF)
 option(HSMBUILD_CLANGTIDY "Enable validation with clang-tidy-15 (if available)" OFF)
 
@@ -181,8 +188,10 @@ elseif (HSMBUILD_TARGET STREQUAL "library")
     set(THREADS_PREFER_PTHREAD_FLAG TRUE)
     find_package (Threads REQUIRED)
 
-    add_subdirectory(tools/cmake)
-    add_subdirectory(tools/scxml2gen)
+    if (NOT DISABLE_FOR_RELEASE)
+        add_subdirectory(tools/cmake)
+        add_subdirectory(tools/scxml2gen)
+    endif()
 
     # =============================================
     # Build HSMCPP library

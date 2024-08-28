@@ -4,8 +4,12 @@ set(CMAKE_INSTALL_INCLUDEDIR "include/hsmcpp")
 set(CMAKE_INSTALL_LIBDIR "lib")
 
 set (DEPLOY_DIR ${CMAKE_INSTALL_INCLUDEDIR})
+if (NOT DISABLE_FOR_RELEASE)
 set (DEPLOY_FILES ${LIBRARY_HEADERS}
                   ${FILES_SCXML2GEN})
+else()
+set (DEPLOY_FILES ${LIBRARY_HEADERS})
+endif()
 
 foreach(ITEM ${LIBRARY_HEADERS})
     get_filename_component(ITEM_PATH ${ITEM} DIRECTORY)
@@ -20,6 +24,7 @@ foreach(ITEM ${LIBRARY_HEADERS})
 endforeach()
 
 
+if (NOT DISABLE_FOR_RELEASE)
 # Generate cmake version file
 include(CMakePackageConfigHelpers)
 
@@ -28,15 +33,19 @@ write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/hsmcpp-configVersio
                                  COMPATIBILITY SameMajorVersion )
 configure_file(./pkgconfig/hsmcpp.pc.in hsmcpp.pc @ONLY)
 install(FILES "${PROJECT_BINARY_DIR}/hsmcpp.pc" DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
-install(TARGETS ${HSM_LIBRARY_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/pkgconfig/cmake/hsmcpp-config.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${HSM_LIBRARY_NAME}/)
+
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/hsmcpp-configVersion.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${HSM_LIBRARY_NAME}/ )
+
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/tools/scxml2gen/CMakeLists.txt
                 ${FILES_SCXML2GEN}
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${HSM_LIBRARY_NAME}/scxml2gen)
+endif()
+
+install(TARGETS ${HSM_LIBRARY_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/install.cmake)
 

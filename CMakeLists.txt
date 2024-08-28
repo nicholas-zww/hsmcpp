@@ -117,8 +117,7 @@ set (LIBRARY_HEADERS ${HSM_INCLUDES_ROOT}/hsm.hpp
                      ${HSM_INCLUDES_ROOT}/os/common/UniqueLock.hpp
                      ${HSM_INCLUDES_ROOT}/os/common/CriticalSection.hpp
                      ${HSM_INCLUDES_ROOT}/os/common/InterruptsFreeSection.hpp
-                     ${CMAKE_BINARY_DIR}/version.hpp)
-
+                     )
 set(FILES_SCXML2GEN ${CMAKE_CURRENT_SOURCE_DIR}/tools/scxml2gen/scxml2gen.py
                     ${CMAKE_CURRENT_SOURCE_DIR}/tools/scxml2gen/template.cpp
                     ${CMAKE_CURRENT_SOURCE_DIR}/tools/scxml2gen/template.hpp
